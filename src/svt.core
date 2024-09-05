@@ -1,0 +1,15 @@
+CAPI=2:
+name: fvutils::svt
+
+filesets:
+  svt:
+    files:
+      - svt_pkg.sv
+      - svt_macros.svh:
+          is_include_file: true
+    file_type: systemVerilogSource
+
+targets:
+  default: 
+    filesets:
+    - svt
