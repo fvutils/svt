@@ -19,6 +19,7 @@ package svt_pkg;
             $finish;
         end else begin
             if (prv_test_rgy.exists(testname)) begin
+                bit timeout = 1;
                 svt_test_factory factory = prv_test_rgy[testname];
                 svt_test test = factory.create();
                 svt_barrier barrier = new();
@@ -29,8 +30,15 @@ package svt_pkg;
                 test.do_run(barrier);
 
                 $display("%0t --> wait_no_objections", $time);
-                barrier.wait_no_objections();
+                fork
+                    begin
+                        barrier.wait_no_objections();
+                        timeout = 0;
+                    end
+                    #4ms;
+                join_any
                 $display("%0t <-- wait_no_objections", $time);
+                $finish;
             end else begin
                 $display("Fatal: no test named %0s", testname);
                 $finish;
